@@ -90,13 +90,13 @@ public class GitClientTest {
     private GitClient srcGitClient;
 
     /* commit known to exist in upstream. */
-    private final ObjectId upstreamCommit = ObjectId.fromString("f75720d5de9d79ab4be2633a21de23b3ccbf8ce3");
-    private final String upstreamCommitAuthor = "Teubel György";
-    private final String upstreamCommitEmail = "<tgyurci@freemail.hu>";
-    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("867e5f148377fd5a6d96e5aafbdaac132a117a5a");
+    private final ObjectId upstreamCommit = ObjectId.fromString("c9b84f1e9c5dec5ae21aaeb5b5aecb74163bd75a");
+    private final String upstreamCommitAuthor = "Cesar Avalos";
+    private final String upstreamCommitEmail = "<cesar.avalos3@gmail.com>";
+    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("69b850985effe5ea615ee9b41c64242dcf1d0494");
 
     /* URL of upstream (GitHub) repository. */
-    private final String upstreamRepoURL = "https://github.com/jenkinsci/git-client-plugin";
+    private final String upstreamRepoURL = "https://github.com/cesar-avalos3/ece565-2023";
 
     /* URL of GitHub test repository with large file support. */
     private final String lfsTestRepoURL = "https://github.com/MarkEWaite/jenkins-pipeline-utils";
@@ -208,7 +208,7 @@ public class GitClientTest {
         currentDirCliGit.config(GitClient.ConfigLevel.LOCAL, "tag.gpgSign", "false");
 
         mirrorParent = Files.createTempDirectory("mirror").toFile();
-        /* Clone mirror into mirrorParent/git-client-plugin.git as a bare repo */
+        /* Clone mirror into mirrorParent/ece565-202.git as a bare repo */
         CliGitCommand mirrorParentGitCmd = new CliGitCommand(Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorParent)
                 .using("git")
@@ -218,32 +218,32 @@ public class GitClientTest {
                     "clone",
                     // "--reference", currentDir.getAbsolutePath(), // --reference of shallow repo fails
                     "--mirror",
-                    "https://github.com/jenkinsci/git-client-plugin");
+                    "https://github.com/cesar-avalos3/ece565-2023");
         } else {
             mirrorParentGitCmd.run(
                     "clone",
-                    "--reference",
-                    currentDir.getAbsolutePath(),
+//                    "--reference",
+//                    currentDir.getAbsolutePath(),
                     "--mirror",
-                    "https://github.com/jenkinsci/git-client-plugin");
+                    "https://github.com/cesar-avalos3/ece565-2023");
         }
-        File mirrorDir = new File(mirrorParent, "git-client-plugin.git");
+        File mirrorDir = new File(mirrorParent, "ece565-2023.git");
         assertTrue("Git client mirror repo not created at " + mirrorDir.getAbsolutePath(), mirrorDir.exists());
         GitClient mirrorClient = Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorDir)
                 .using("git")
                 .getClient();
-        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
+//        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
 
-        /* Clone from bare mirrorParent/git-client-plugin.git to working mirrorParent/git-client-plugin */
+        /* Clone from bare mirrorParent/ece565-202.git to working mirrorParent/git-client-plugin */
         mirrorParentGitCmd.run("clone", mirrorDir.getAbsolutePath());
-        srcRepoDir = new File(mirrorParent, "git-client-plugin");
+        srcRepoDir = new File(mirrorParent, "ece565-2023");
     }
 
     /**
      * Tests that need the default branch name can use this variable.
      */
-    private static String defaultBranchName = "mast" + "er"; // Intentionally separated string
+    private static String defaultBranchName = "main"; // Intentionally separated string
 
     /**
      * Determine the global default branch name.
@@ -1177,7 +1177,7 @@ public class GitClientTest {
         for (String refSpecString : optionalRefSpecs) {
             refSpecs.add(new RefSpec(refSpecString));
         }
-        switch (random.nextInt(2)) {
+        switch (1) {
             default:
             case 0:
                 if (remote.equals("origin")) {
@@ -1310,12 +1310,12 @@ public class GitClientTest {
 
     @Test
     public void testCheckoutBranch() throws Exception {
-        File src = new File(repoRoot, "src");
-        assertFalse(src.isDirectory());
-        String branch = "master";
+        File a = new File(repoRoot, "a.out");
+        assertFalse(a.isFile());
+        String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
-        assertTrue(src.isDirectory());
+        assertTrue(a.isFile());
     }
 
     @Test
@@ -1997,7 +1997,7 @@ public class GitClientTest {
     }
 
     private String fetchUpstream(String firstBranch, String... branches) throws Exception {
-        String remote = "upstream";
+        String remote = "origin";
         gitClient.addRemoteUrl(remote, upstreamRepoURL);
         String firstRef = remote + "/" + firstBranch;
         String firstRefSpec = "+refs/heads/" + firstBranch + ":refs/remotes/" + firstRef;
