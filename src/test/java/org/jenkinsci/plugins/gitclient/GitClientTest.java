@@ -90,13 +90,13 @@ public class GitClientTest {
     private GitClient srcGitClient;
 
     /* commit known to exist in upstream. */
-    private final ObjectId upstreamCommit = ObjectId.fromString("472ad2d1dec800bbe7969f75293fe93cb6de29f8");
+    private final ObjectId upstreamCommit = ObjectId.fromString("e0e99a14d9def0af9eed6da3127626574486defe");
     private final String upstreamCommitAuthor = "Chris Herczeg";
-    private final String upstreamCommitEmail = "<chrisherczeg@microsoft.com>";
-    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("c002fc6187aacc9697b38755d1cfd6e5a49b39ed");
+    private final String upstreamCommitEmail = "<cherczeg@purdue.edu>";
+    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("69734ae16766a08bf44c7ce9a5342a125280ea82");
 
     /* URL of upstream (GitHub) repository. */
-    private final String upstreamRepoURL = "https://github.com/chrisherczeg/oss-performance-small-git-repo";
+    private final String upstreamRepoURL = "https://github.com/chrisherczeg/small-git-repo";
 
     /* URL of GitHub test repository with large file support. */
     private final String lfsTestRepoURL = "https://github.com/MarkEWaite/jenkins-pipeline-utils";
@@ -218,16 +218,16 @@ public class GitClientTest {
                     "clone",
                     // "--reference", currentDir.getAbsolutePath(), // --reference of shallow repo fails
                     "--mirror",
-                    "https://github.com/chrisherczeg/oss-performance-small-git-repo");
+                    "https://github.com/chrisherczeg/small-git-repo");
         } else {
             mirrorParentGitCmd.run(
                     "clone",
 //                    "--reference",
 //                    currentDir.getAbsolutePath(),
                     "--mirror",
-                    "https://github.com/chrisherczeg/oss-performance-small-git-repo");
+                    "https://github.com/chrisherczeg/small-git-repo");
         }
-        File mirrorDir = new File(mirrorParent, "oss-performance-small-git-repo.git");
+        File mirrorDir = new File(mirrorParent, "small-git-repo.git");
         assertTrue("Git client mirror repo not created at " + mirrorDir.getAbsolutePath(), mirrorDir.exists());
         GitClient mirrorClient = Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorDir)
@@ -237,7 +237,7 @@ public class GitClientTest {
 
         /* Clone from bare mirrorParent/ece565-202.git to working mirrorParent/git-client-plugin */
         mirrorParentGitCmd.run("clone", mirrorDir.getAbsolutePath());
-        srcRepoDir = new File(mirrorParent, "oss-performance-small-git-repo");
+        srcRepoDir = new File(mirrorParent, "small-git-repo");
     }
 
     /**
@@ -1326,7 +1326,7 @@ public class GitClientTest {
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
         /* Check that exception is thrown trying to create an existing branch */
-        assertThrows(GitException.class, () -> gitClient.branch("master"));
+        assertThrows(GitException.class, () -> gitClient.branch("main"));
     }
 
     @Test
@@ -2040,7 +2040,7 @@ public class GitClientTest {
     @Test
     public void testHasGitModulesFalse() throws Exception {
         assertModulesDir(false);
-        checkoutAndAssertHasGitModules("master", false);
+        checkoutAndAssertHasGitModules("main", false);
         assertModulesDir(false); // repo has no modules dir and no submodules
     }
 
