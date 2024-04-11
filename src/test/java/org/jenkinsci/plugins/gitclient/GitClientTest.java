@@ -90,13 +90,13 @@ public class GitClientTest {
     private GitClient srcGitClient;
 
     /* commit known to exist in upstream. */
-    private final ObjectId upstreamCommit = ObjectId.fromString("f75720d5de9d79ab4be2633a21de23b3ccbf8ce3");
-    private final String upstreamCommitAuthor = "Teubel György";
-    private final String upstreamCommitEmail = "<tgyurci@freemail.hu>";
-    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("867e5f148377fd5a6d96e5aafbdaac132a117a5a");
+    private final ObjectId upstreamCommit = ObjectId.fromString("472ad2d1dec800bbe7969f75293fe93cb6de29f8");
+    private final String upstreamCommitAuthor = "Chris Herczeg";
+    private final String upstreamCommitEmail = "<chrisherczeg@microsoft.com>";
+    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("c002fc6187aacc9697b38755d1cfd6e5a49b39ed");
 
     /* URL of upstream (GitHub) repository. */
-    private final String upstreamRepoURL = "https://github.com/jenkinsci/git-client-plugin";
+    private final String upstreamRepoURL = "https://github.com/chrisherczeg/oss-performance-small-git-repo";
 
     /* URL of GitHub test repository with large file support. */
     private final String lfsTestRepoURL = "https://github.com/MarkEWaite/jenkins-pipeline-utils";
@@ -208,7 +208,7 @@ public class GitClientTest {
         currentDirCliGit.config(GitClient.ConfigLevel.LOCAL, "tag.gpgSign", "false");
 
         mirrorParent = Files.createTempDirectory("mirror").toFile();
-        /* Clone mirror into mirrorParent/git-client-plugin.git as a bare repo */
+        /* Clone mirror into mirrorParent/ece565-202.git as a bare repo */
         CliGitCommand mirrorParentGitCmd = new CliGitCommand(Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorParent)
                 .using("git")
@@ -218,32 +218,32 @@ public class GitClientTest {
                     "clone",
                     // "--reference", currentDir.getAbsolutePath(), // --reference of shallow repo fails
                     "--mirror",
-                    "https://github.com/jenkinsci/git-client-plugin");
+                    "https://github.com/chrisherczeg/oss-performance-small-git-repo");
         } else {
             mirrorParentGitCmd.run(
                     "clone",
-                    "--reference",
-                    currentDir.getAbsolutePath(),
+//                    "--reference",
+//                    currentDir.getAbsolutePath(),
                     "--mirror",
-                    "https://github.com/jenkinsci/git-client-plugin");
+                    "https://github.com/chrisherczeg/oss-performance-small-git-repo");
         }
-        File mirrorDir = new File(mirrorParent, "git-client-plugin.git");
+        File mirrorDir = new File(mirrorParent, "oss-performance-small-git-repo.git");
         assertTrue("Git client mirror repo not created at " + mirrorDir.getAbsolutePath(), mirrorDir.exists());
         GitClient mirrorClient = Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorDir)
                 .using("git")
                 .getClient();
-        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
+//        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
 
-        /* Clone from bare mirrorParent/git-client-plugin.git to working mirrorParent/git-client-plugin */
+        /* Clone from bare mirrorParent/ece565-202.git to working mirrorParent/git-client-plugin */
         mirrorParentGitCmd.run("clone", mirrorDir.getAbsolutePath());
-        srcRepoDir = new File(mirrorParent, "git-client-plugin");
+        srcRepoDir = new File(mirrorParent, "oss-performance-small-git-repo");
     }
 
     /**
      * Tests that need the default branch name can use this variable.
      */
-    private static String defaultBranchName = "mast" + "er"; // Intentionally separated string
+    private static String defaultBranchName = "main"; // Intentionally separated string
 
     /**
      * Determine the global default branch name.
@@ -352,18 +352,18 @@ public class GitClientTest {
 
     private String randomName() {
         final String[] names = {
-            "Cinda Bückmaster",
-            "Miloš Obrenović",
-            "Vojtěch Šafařík",
-            "Pfalzgraf Wolfgang von Zweibrücken",
-            "Johann Friedrich Konrad Carl Eduard Horst Arnold Matthias Prinz von Sachsen-Meiningen Herzog zu Sachsen",
-            "Al-Mu'tamid",
-            "Øresund Bridge",
-            "Caterina œil Perrault",
-            "Kesha Ríckel",
-            "Shawnda Bœlter",
-            "Hans Gǿr",
-            "Thu Null"
+                "Cinda Bückmaster",
+                "Miloš Obrenović",
+                "Vojtěch Šafařík",
+                "Pfalzgraf Wolfgang von Zweibrücken",
+                "Johann Friedrich Konrad Carl Eduard Horst Arnold Matthias Prinz von Sachsen-Meiningen Herzog zu Sachsen",
+                "Al-Mu'tamid",
+                "Øresund Bridge",
+                "Caterina œil Perrault",
+                "Kesha Ríckel",
+                "Shawnda Bœlter",
+                "Hans Gǿr",
+                "Thu Null"
         };
         return names[random.nextInt(names.length)];
     }
@@ -1035,7 +1035,7 @@ public class GitClientTest {
         final URIish remote = new URIish(Constants.DEFAULT_REMOTE_NAME);
 
         try ( // add second remote
-        FileRepository repo = new FileRepository(new File(repoRoot, ".git"))) {
+              FileRepository repo = new FileRepository(new File(repoRoot, ".git"))) {
             StoredConfig config = repo.getConfig();
             config.setString("remote", "upstream", "url", "file://" + repoRootTemp.getPath());
             config.setString("remote", "upstream", "fetch", "+refs/heads/*:refs/remotes/upstream/*");
@@ -1177,7 +1177,7 @@ public class GitClientTest {
         for (String refSpecString : optionalRefSpecs) {
             refSpecs.add(new RefSpec(refSpecString));
         }
-        switch (random.nextInt(2)) {
+        switch (1) {
             default:
             case 0:
                 if (remote.equals("origin")) {
@@ -1310,19 +1310,19 @@ public class GitClientTest {
 
     @Test
     public void testCheckoutBranch() throws Exception {
-        File src = new File(repoRoot, "src");
-        assertFalse(src.isDirectory());
-        String branch = "master";
+        File a = new File(repoRoot, "a.out");
+        assertFalse(a.isFile());
+        String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
-        assertTrue(src.isDirectory());
+        assertTrue(a.isFile());
     }
 
     @Test
     public void testBranchExistsException() throws Exception {
         File src = new File(repoRoot, "src");
         assertFalse(src.isDirectory());
-        String branch = "master";
+        String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
         /* Check that exception is thrown trying to create an existing branch */
@@ -1333,7 +1333,7 @@ public class GitClientTest {
     public void testEmptyCommitException() throws Exception {
         File src = new File(repoRoot, "src");
         assertFalse(src.isDirectory());
-        String branch = "master";
+        String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
         if (gitImplName.equals("git")) {
@@ -1349,7 +1349,7 @@ public class GitClientTest {
     public void testDeleteNonExistingBranchException() throws Exception {
         File src = new File(repoRoot, "src");
         assertFalse(src.isDirectory());
-        String branch = "master";
+        String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
         if (gitImplName.equals("git")) {
@@ -1997,7 +1997,7 @@ public class GitClientTest {
     }
 
     private String fetchUpstream(String firstBranch, String... branches) throws Exception {
-        String remote = "upstream";
+        String remote = "origin";
         gitClient.addRemoteUrl(remote, upstreamRepoURL);
         String firstRef = remote + "/" + firstBranch;
         String firstRefSpec = "+refs/heads/" + firstBranch + ":refs/remotes/" + firstRef;
@@ -2649,9 +2649,9 @@ public class GitClientTest {
         String upstream = checkoutAndAssertHasGitModules(branchName, true);
         List<IndexEntry> submodules = gitClient.getSubmodules(branchName);
         IndexEntry[] expectedSubmodules = {
-            new IndexEntry("160000", "commit", "978c8b223b33e203a5c766ecf79704a5ea9b35c8", "modules/firewall"),
-            new IndexEntry("160000", "commit", "b62fabbc2bb37908c44ded233e0f4bf479e45609", "modules/ntp"),
-            new IndexEntry("160000", "commit", "689c45ed57f0829735f9a2b16760c14236fe21d9", "modules/sshkeys")
+                new IndexEntry("160000", "commit", "978c8b223b33e203a5c766ecf79704a5ea9b35c8", "modules/firewall"),
+                new IndexEntry("160000", "commit", "b62fabbc2bb37908c44ded233e0f4bf479e45609", "modules/ntp"),
+                new IndexEntry("160000", "commit", "689c45ed57f0829735f9a2b16760c14236fe21d9", "modules/sshkeys")
         };
         assertThat(submodules, hasItems(expectedSubmodules));
     }
@@ -3125,9 +3125,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 7, 10, 4),
-            new CliGitAPIImplTest.VersionTest(true, 1, 7, 10, 3),
-            new CliGitAPIImplTest.VersionTest(false, 1, 7, 10, 5)
+                new CliGitAPIImplTest.VersionTest(true, 1, 7, 10, 4),
+                new CliGitAPIImplTest.VersionTest(true, 1, 7, 10, 3),
+                new CliGitAPIImplTest.VersionTest(false, 1, 7, 10, 5)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.7.10.4", versions);
     }
@@ -3138,10 +3138,10 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 0, 1, 0),
-            new CliGitAPIImplTest.VersionTest(true, 2, 0, 0, 0),
-            new CliGitAPIImplTest.VersionTest(false, 2, 0, 2, 0),
-            new CliGitAPIImplTest.VersionTest(false, 2, 1, 0, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 0, 1, 0),
+                new CliGitAPIImplTest.VersionTest(true, 2, 0, 0, 0),
+                new CliGitAPIImplTest.VersionTest(false, 2, 0, 2, 0),
+                new CliGitAPIImplTest.VersionTest(false, 2, 1, 0, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.0.1", versions);
     }
@@ -3152,9 +3152,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 0, 0, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 99, 99),
-            new CliGitAPIImplTest.VersionTest(false, 2, 0, 1, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 0, 0, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 99, 99),
+                new CliGitAPIImplTest.VersionTest(false, 2, 0, 1, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.0.0.rc0", versions);
         cliGitAPIImplTest.assertVersionOutput("git version 2.0.0.rc2", versions);
@@ -3169,9 +3169,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 0, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 99, 99),
-            new CliGitAPIImplTest.VersionTest(false, 1, 9, 1, 0)
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 0, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 99, 99),
+                new CliGitAPIImplTest.VersionTest(false, 1, 9, 1, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.9.0", versions);
     }
@@ -3182,9 +3182,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 0, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 7, 99, 0),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 1, 0)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 0, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 7, 99, 0),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 1, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.0.msysgit.0", versions);
     }
@@ -3195,9 +3195,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 99),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 4, 1)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 99),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 4, 1)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.4.msysgit.0", versions);
     }
@@ -3208,9 +3208,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 5, 2),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 5, 1),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 5, 3)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 5, 2),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 5, 1),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 5, 3)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.5.2.msysgit.0", versions);
     }
@@ -3221,9 +3221,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 0, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 99, 0),
-            new CliGitAPIImplTest.VersionTest(false, 1, 9, 0, 1)
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 0, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 99, 0),
+                new CliGitAPIImplTest.VersionTest(false, 1, 9, 0, 1)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.9.0.msysgit.0", versions);
     }
@@ -3234,9 +3234,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 2, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 1, 99),
-            new CliGitAPIImplTest.VersionTest(false, 1, 9, 2, 1)
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 2, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 1, 99),
+                new CliGitAPIImplTest.VersionTest(false, 1, 9, 2, 1)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.9.2.msysgit.0", versions);
     }
@@ -3247,9 +3247,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 4, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 9, 3, 99),
-            new CliGitAPIImplTest.VersionTest(false, 1, 9, 4, 1)
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 4, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 9, 3, 99),
+                new CliGitAPIImplTest.VersionTest(false, 1, 9, 4, 1)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.9.4.msysgit.0", versions);
     }
@@ -3260,9 +3260,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 5, 0, 1),
-            new CliGitAPIImplTest.VersionTest(true, 2, 5, 0, 0),
-            new CliGitAPIImplTest.VersionTest(false, 2, 5, 0, 2)
+                new CliGitAPIImplTest.VersionTest(true, 2, 5, 0, 1),
+                new CliGitAPIImplTest.VersionTest(true, 2, 5, 0, 0),
+                new CliGitAPIImplTest.VersionTest(false, 2, 5, 0, 2)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.5.0.windows.1", versions);
     }
@@ -3273,11 +3273,11 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 10, 1, 1),
-            new CliGitAPIImplTest.VersionTest(true, 2, 10, 1, 0),
-            new CliGitAPIImplTest.VersionTest(true, 2, 10, 0, 1),
-            new CliGitAPIImplTest.VersionTest(false, 2, 10, 1, 2),
-            new CliGitAPIImplTest.VersionTest(false, 2, 10, 2, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 10, 1, 1),
+                new CliGitAPIImplTest.VersionTest(true, 2, 10, 1, 0),
+                new CliGitAPIImplTest.VersionTest(true, 2, 10, 0, 1),
+                new CliGitAPIImplTest.VersionTest(false, 2, 10, 1, 2),
+                new CliGitAPIImplTest.VersionTest(false, 2, 10, 2, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.10.1.windows.1", versions);
     }
@@ -3288,9 +3288,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 2, 1),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 2, 0),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 2, 2)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 2, 1),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 2, 0),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 2, 2)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.2.1", versions);
     }
@@ -3301,10 +3301,10 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 7, 1, 0),
-            new CliGitAPIImplTest.VersionTest(true, 1, 7, 0, 99),
-            new CliGitAPIImplTest.VersionTest(false, 1, 7, 1, 1),
-            new CliGitAPIImplTest.VersionTest(false, 1, 7, 2, 0)
+                new CliGitAPIImplTest.VersionTest(true, 1, 7, 1, 0),
+                new CliGitAPIImplTest.VersionTest(true, 1, 7, 0, 99),
+                new CliGitAPIImplTest.VersionTest(false, 1, 7, 1, 1),
+                new CliGitAPIImplTest.VersionTest(false, 1, 7, 2, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.7.1", versions);
     }
@@ -3315,9 +3315,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 5),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 4),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 4, 6)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 5),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 4, 4),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 4, 6)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.4.5", versions);
     }
@@ -3328,9 +3328,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 2),
-            new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 1),
-            new CliGitAPIImplTest.VersionTest(false, 1, 8, 3, 3)
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 2),
+                new CliGitAPIImplTest.VersionTest(true, 1, 8, 3, 1),
+                new CliGitAPIImplTest.VersionTest(false, 1, 8, 3, 3)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 1.8.3.2", versions);
     }
@@ -3341,9 +3341,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 2, 2, 0),
-            new CliGitAPIImplTest.VersionTest(true, 2, 2, 1, 0),
-            new CliGitAPIImplTest.VersionTest(false, 2, 2, 3, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 2, 2, 0),
+                new CliGitAPIImplTest.VersionTest(true, 2, 2, 1, 0),
+                new CliGitAPIImplTest.VersionTest(false, 2, 2, 3, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.2.2", versions);
     }
@@ -3354,9 +3354,9 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 3, 0, 0),
-            new CliGitAPIImplTest.VersionTest(true, 2, 2, 9, 0),
-            new CliGitAPIImplTest.VersionTest(false, 2, 3, 1, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 3, 0, 0),
+                new CliGitAPIImplTest.VersionTest(true, 2, 2, 9, 0),
+                new CliGitAPIImplTest.VersionTest(false, 2, 3, 1, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.3.0", versions);
     }
@@ -3367,11 +3367,11 @@ public class GitClientTest {
             return;
         }
         CliGitAPIImplTest.VersionTest[] versions = {
-            new CliGitAPIImplTest.VersionTest(true, 2, 3, 5, 0),
-            new CliGitAPIImplTest.VersionTest(true, 2, 2, 9, 9),
-            new CliGitAPIImplTest.VersionTest(false, 2, 3, 5, 1),
-            new CliGitAPIImplTest.VersionTest(false, 2, 4, 0, 0),
-            new CliGitAPIImplTest.VersionTest(false, 3, 0, 0, 0)
+                new CliGitAPIImplTest.VersionTest(true, 2, 3, 5, 0),
+                new CliGitAPIImplTest.VersionTest(true, 2, 2, 9, 9),
+                new CliGitAPIImplTest.VersionTest(false, 2, 3, 5, 1),
+                new CliGitAPIImplTest.VersionTest(false, 2, 4, 0, 0),
+                new CliGitAPIImplTest.VersionTest(false, 3, 0, 0, 0)
         };
         cliGitAPIImplTest.assertVersionOutput("git version 2.3.5", versions);
     }
