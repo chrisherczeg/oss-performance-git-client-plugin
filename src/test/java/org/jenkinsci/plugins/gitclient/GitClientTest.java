@@ -90,7 +90,7 @@ public class GitClientTest {
     private GitClient srcGitClient;
 
     /* commit known to exist in upstream. */
-    private final ObjectId upstreamCommit = ObjectId.fromString("e0e99a14d9def0af9eed6da3127626574486defe");
+    private final ObjectId upstreamCommit = ObjectId.fromString("7e11f79d5b899dd0e006973e3ceb7fe31c9d76df");
     private final String upstreamCommitAuthor = "Chris Herczeg";
     private final String upstreamCommitEmail = "<cherczeg@purdue.edu>";
     private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("69734ae16766a08bf44c7ce9a5342a125280ea82");
@@ -2774,7 +2774,7 @@ public class GitClientTest {
      */
     @Test
     public void testDescribeSrcCommit() throws Exception {
-        assertThat(srcGitClient.describe(upstreamCommit.getName()), startsWith("git-client-1.6.3-23-gf75720d"));
+        assertThat(srcGitClient.describe(upstreamCommit.getName()), startsWith("git-client-2.7.5-2-g7e11f79"));
     }
 
     @Test
