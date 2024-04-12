@@ -2791,8 +2791,8 @@ public class GitClientTest {
     @Test
     public void testDescribeTagFromMerge() throws Exception {
         assertThat(
-                srcGitClient.describe("40d44ffce5fa589605dd6b6ad92ab7235a92b330"),
-                startsWith("git-client-1.0.7-74-g40d44ff"));
+                srcGitClient.describe("bf0e9885b30cf4b5cdaa5f90a95fe6f3d888d9b5"),
+                startsWith("git-client-3.0.0-2-gbf0e988"));
     }
 
     @Test
