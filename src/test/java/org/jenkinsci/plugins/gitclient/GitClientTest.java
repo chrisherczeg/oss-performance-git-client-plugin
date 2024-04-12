@@ -1805,11 +1805,11 @@ public class GitClientTest {
         }
         String upstream = fetchUpstream("tests/getSubmodules", "tests/notSubmodules");
         assertThat(
-                gitClient.getRefNames("refs/remotes/upstream/"),
-                hasItems("refs/remotes/upstream/tests/getSubmodules", "refs/remotes/upstream/tests/notSubmodules"));
-        gitClient.deleteRef("refs/remotes/upstream/tests/notSubmodules");
+                gitClient.getRefNames("refs/remotes/origin/"),
+                hasItems("refs/remotes/origin/tests/getSubmodules", "refs/remotes/origin/tests/notSubmodules"));
+        gitClient.deleteRef("refs/remotes/origin/tests/notSubmodules");
         assertThat(
-                gitClient.getRefNames("refs/remotes/upstream/"), hasItems("refs/remotes/upstream/tests/getSubmodules"));
+                gitClient.getRefNames("refs/remotes/origin/"), hasItems("refs/remotes/origin/tests/getSubmodules"));
     }
 
     @Test(expected = GitException.class)
@@ -3095,7 +3095,7 @@ public class GitClientTest {
         /* Confirm expected tag exists */
         Set<GitObject> tags = gitClient.getTags();
         String tagName = "git-client-2.7.5";
-        GitObject tag = new GitObject(tagName, ObjectId.fromString("0629421ea3ffb2b91ea0d62ffc5f97142fe137f3"));
+        GitObject tag = new GitObject(tagName, ObjectId.fromString("e3d5ad39ea49554130f687a9bd4ca6db3b28a559"));
         assertThat(tags, hasItems(tag));
 
         /* Delete the tag that was just confirmed to exist */
