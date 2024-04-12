@@ -1222,7 +1222,7 @@ public class GitClientTest {
         fetch(gitClient, "origin", "+refs/heads/*:refs/remotes/origin/*");
 
         /* Checkout a commit after README was added, before src directory was added */
-        String ref = "5a865818566c9d03738cdcd49cc0a1543613fd41";
+        String ref = "e0e99a14d9def0af9eed6da3127626574486defe";
         gitClient.checkout(ref);
         /* Confirm README.md visible, src directory not */
         assertFileInWorkingDir(gitClient, "README.md");
@@ -1230,14 +1230,14 @@ public class GitClientTest {
         assertDetachedHead(gitClient, ObjectId.fromString(ref));
 
         /* Checkout a commit before README was added, before src directory was added */
-        String olderRef = "28f42e8d299154cd209cb1c75457fa9966a74f33";
+        String olderRef = "355e2b662363fea88ac31638901d942d120c67dd";
         gitClient.checkout(olderRef);
-        assertFileNotInWorkingDir(gitClient, "README.md");
+        assertFileNotInWorkingDir(gitClient, "test.md");
         assertDirNotInWorkingDir(gitClient, "src");
         assertDetachedHead(gitClient, ObjectId.fromString(olderRef));
 
         /* Checkout a commit after README and src were added */
-        String newestRef = "ded4597c18562fabb862f6012fb041a40d0d651a";
+        String newestRef = "debc7919d8159ae62b114cb01ece2a6be9a8520e";
         gitClient.checkout(newestRef);
         assertFileInWorkingDir(gitClient, "README.md");
         assertDirInWorkingDir(gitClient, "src");
@@ -2785,7 +2785,7 @@ public class GitClientTest {
 
     @Test
     public void testDescribeTag() throws Exception {
-        assertThat(srcGitClient.describe("git-client-1.19.6"), startsWith("git-client-1.19.6"));
+        assertThat(srcGitClient.describe("git-client-1.11.0"), startsWith("git-client-1.11.0"));
     }
 
     @Test
