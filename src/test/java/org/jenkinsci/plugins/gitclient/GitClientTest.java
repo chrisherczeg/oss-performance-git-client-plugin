@@ -1284,7 +1284,7 @@ public class GitClientTest {
         String branchName = baseName + branchNumber++;
 
         /* Checkout a commit after README was added, before src directory was added */
-        String ref = "5a865818566c9d03738cdcd49cc0a1543613fd41";
+        String ref = "e0e99a14d9def0af9eed6da3127626574486defe";
         gitClient.checkout().ref(ref).branch(branchName).execute();
         /* Confirm README.md visible, src directory not */
         assertFileInWorkingDir(gitClient, "README.md");
@@ -1293,15 +1293,15 @@ public class GitClientTest {
 
         /* Checkout a commit before README was added, before src directory was added */
         branchName = baseName + branchNumber++;
-        String olderRef = "28f42e8d299154cd209cb1c75457fa9966a74f33";
+        String olderRef = "355e2b662363fea88ac31638901d942d120c67dd";
         gitClient.checkout().ref(olderRef).branch(branchName).execute();
-        assertFileNotInWorkingDir(gitClient, "README.md");
+        assertFileNotInWorkingDir(gitClient, "test.md");
         assertDirNotInWorkingDir(gitClient, "src");
         assertBranch(gitClient, branchName);
 
         /* Checkout a commit after README and src were added */
         branchName = baseName + branchNumber++;
-        String newestRef = "ded4597c18562fabb862f6012fb041a40d0d651a";
+        String newestRef = "debc7919d8159ae62b114cb01ece2a6be9a8520e";
         gitClient.checkout().ref(newestRef).branch(branchName).execute();
         assertFileInWorkingDir(gitClient, "README.md");
         assertDirInWorkingDir(gitClient, "src");
