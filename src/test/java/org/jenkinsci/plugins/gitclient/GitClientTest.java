@@ -93,7 +93,7 @@ public class GitClientTest {
     private final ObjectId upstreamCommit = ObjectId.fromString("7e11f79d5b899dd0e006973e3ceb7fe31c9d76df");
     private final String upstreamCommitAuthor = "Chris Herczeg";
     private final String upstreamCommitEmail = "<cherczeg@purdue.edu>";
-    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("69734ae16766a08bf44c7ce9a5342a125280ea82");
+    private final ObjectId upstreamCommitPredecessor = ObjectId.fromString("355e2b662363fea88ac31638901d942d120c67dd");
 
     /* URL of upstream (GitHub) repository. */
     private final String upstreamRepoURL = "https://github.com/chrisherczeg/small-git-repo";
@@ -2780,7 +2780,7 @@ public class GitClientTest {
     @Test
     public void testDescribeSrcCommitPredecessor() throws Exception {
         assertThat(
-                srcGitClient.describe(upstreamCommitPredecessor.getName()), startsWith("git-client-1.6.3-22-g867e5f1"));
+                srcGitClient.describe(upstreamCommitPredecessor.getName()), startsWith("git-client-1.6.3-1-g355e2b6"));
     }
 
     @Test
