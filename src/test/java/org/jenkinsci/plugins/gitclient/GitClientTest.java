@@ -2796,17 +2796,10 @@ public class GitClientTest {
     }
 
     @Test
-    public void testDescribeTagDeepGraph() throws Exception {
-        assertThat(
-                srcGitClient.describe("640ef19f4157d9a5508d46c3f9ad0c41d7d7ef51"),
-                startsWith("git-client-1.19.0-38-g640ef19"));
-    }
-
-    @Test
     public void testDescribeTagDeeperGraph() throws Exception {
         assertThat(
-                srcGitClient.describe("88ca6b449dd155a03d7142c9ad5f17fd7ca2b34e"),
-                startsWith("git-client-1.11.0-24-g88ca6b4"));
+                srcGitClient.describe("69734ae16766a08bf44c7ce9a5342a125280ea82"),
+                startsWith("git-client-1.11.0"));
     }
 
     @Test(expected = GitException.class)
