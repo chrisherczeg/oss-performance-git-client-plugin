@@ -2815,7 +2815,7 @@ public class GitClientTest {
     }
 
     /* A SHA1 that exists in src repo, but unlikely to be referenced from a local branch in src repo */
-    private final String TESTS_NOT_SUBMODULE_SHA1 = "f04fae26f6b612c4a575314222d72c20ca4090a5";
+    private final String TESTS_NOT_SUBMODULE_SHA1 = "a98739e81850d5158bd82466e28a7991a7906913";
 
     @Test
     public void testgetBranchesContainingTrue_existing_sha1() throws Exception {
