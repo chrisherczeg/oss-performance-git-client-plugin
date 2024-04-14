@@ -208,7 +208,7 @@ public class GitClientTest {
         currentDirCliGit.config(GitClient.ConfigLevel.LOCAL, "tag.gpgSign", "false");
 
         mirrorParent = Files.createTempDirectory("mirror").toFile();
-        /* Clone mirror into mirrorParent/ece565-202.git as a bare repo */
+        /* Clone mirror into mirrorParent/small-git-repo.git as a bare repo */
         CliGitCommand mirrorParentGitCmd = new CliGitCommand(Git.with(TaskListener.NULL, new EnvVars())
                 .in(mirrorParent)
                 .using("git")
@@ -222,8 +222,7 @@ public class GitClientTest {
         } else {
             mirrorParentGitCmd.run(
                     "clone",
-//                    "--reference",
-//                    currentDir.getAbsolutePath(),
+                    // "--reference", currentDir.getAbsolutePath(), // --reference not applicable for small-git-repo
                     "--mirror",
                     "https://github.com/chrisherczeg/small-git-repo");
         }
@@ -235,7 +234,7 @@ public class GitClientTest {
                 .getClient();
 //        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
 
-        /* Clone from bare mirrorParent/ece565-202.git to working mirrorParent/git-client-plugin */
+        /* Clone from bare mirrorParent/small-git-repo.git to working mirrorParent/git-client-plugin */
         mirrorParentGitCmd.run("clone", mirrorDir.getAbsolutePath());
         srcRepoDir = new File(mirrorParent, "small-git-repo");
     }
