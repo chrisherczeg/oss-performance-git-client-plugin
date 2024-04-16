@@ -232,7 +232,7 @@ public class GitClientTest {
                 .in(mirrorDir)
                 .using("git")
                 .getClient();
-//        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
+        assertThat(mirrorClient.getTagNames("git-client-1.6.3"), contains("git-client-1.6.3"));
 
         /* Clone from bare mirrorParent/small-git-repo.git to working mirrorParent/git-client-plugin */
         mirrorParentGitCmd.run("clone", mirrorDir.getAbsolutePath());
@@ -1176,7 +1176,7 @@ public class GitClientTest {
         for (String refSpecString : optionalRefSpecs) {
             refSpecs.add(new RefSpec(refSpecString));
         }
-        switch (1) {
+        switch (random.nextInt(2)) {
             default:
             case 0:
                 if (remote.equals("origin")) {
@@ -1309,12 +1309,12 @@ public class GitClientTest {
 
     @Test
     public void testCheckoutBranch() throws Exception {
-        File a = new File(repoRoot, "a.out");
-        assertFalse(a.isFile());
+        File src = new File(repoRoot, "src");
+        assertFalse(src.isDirectory());
         String branch = "main";
         String remote = fetchUpstream(branch);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
-        assertTrue(a.isFile());
+        assertTrue(src.isDirectory());
     }
 
     @Test
@@ -1802,13 +1802,13 @@ public class GitClientTest {
             // JGit won't delete refs from a repo without local commits
             commitOneFile();
         }
-        String upstream = fetchUpstream("tests/getSubmodules", "tests/notSubmodules");
+        String upstream = fetchUpstream("tests/getSubmodules", true, "tests/notSubmodules");
         assertThat(
-                gitClient.getRefNames("refs/remotes/origin/"),
-                hasItems("refs/remotes/origin/tests/getSubmodules", "refs/remotes/origin/tests/notSubmodules"));
-        gitClient.deleteRef("refs/remotes/origin/tests/notSubmodules");
+                gitClient.getRefNames("refs/remotes/upstream/"),
+                hasItems("refs/remotes/upstream/tests/getSubmodules", "refs/remotes/upstream/tests/notSubmodules"));
+        gitClient.deleteRef("refs/remotes/upstream/tests/notSubmodules");
         assertThat(
-                gitClient.getRefNames("refs/remotes/origin/"), hasItems("refs/remotes/origin/tests/getSubmodules"));
+                gitClient.getRefNames("refs/remotes/upstream/"), hasItems("refs/remotes/upstream/tests/getSubmodules"));
     }
 
     @Test(expected = GitException.class)
@@ -1996,8 +1996,18 @@ public class GitClientTest {
     }
 
     private String fetchUpstream(String firstBranch, String... branches) throws Exception {
+        return fetchUpstream(firstBranch, false, branches);
+    }
+
+    private String fetchUpstream(String firstBranch, boolean useGCP, String... branches) throws Exception {
         String remote = "origin";
-        gitClient.addRemoteUrl(remote, upstreamRepoURL);
+        if (useGCP) {
+            remote = "upstream";
+            gitClient.addRemoteUrl(remote, "https://github.com/jenkinsci/git-client-plugin");
+        } else {
+            gitClient.addRemoteUrl(remote, upstreamRepoURL);
+        }
+
         String firstRef = remote + "/" + firstBranch;
         String firstRefSpec = "+refs/heads/" + firstBranch + ":refs/remotes/" + firstRef;
         if (branches.length == 0) {
@@ -2025,7 +2035,7 @@ public class GitClientTest {
 
     private String checkoutAndAssertHasGitModules(String branch, boolean gitModulesExpected) throws Exception {
         assertFalse(gitClient.hasGitModules());
-        String remote = fetchUpstream(branch);
+        String remote = fetchUpstream(branch, true);
         gitClient.checkoutBranch(branch, remote + "/" + branch);
         assertThat(gitClient.hasGitModules(), is(gitModulesExpected)); // After checkout
         return remote;
@@ -2039,7 +2049,7 @@ public class GitClientTest {
     @Test
     public void testHasGitModulesFalse() throws Exception {
         assertModulesDir(false);
-        checkoutAndAssertHasGitModules("main", false);
+        checkoutAndAssertHasGitModules("master", false);
         assertModulesDir(false); // repo has no modules dir and no submodules
     }
 
