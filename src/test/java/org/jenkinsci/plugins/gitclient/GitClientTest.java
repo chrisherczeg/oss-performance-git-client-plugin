@@ -1228,7 +1228,7 @@ public class GitClientTest {
         assertDirNotInWorkingDir(gitClient, "src");
         assertDetachedHead(gitClient, ObjectId.fromString(ref));
 
-        /* Checkout a commit before README was added, before src directory was added */
+        /* Checkout a commit before test.md was added, before src directory was added */
         String olderRef = "355e2b662363fea88ac31638901d942d120c67dd";
         gitClient.checkout(olderRef);
         assertFileNotInWorkingDir(gitClient, "test.md");
@@ -1258,7 +1258,7 @@ public class GitClientTest {
         assertDirNotInWorkingDir(gitClient, "src");
         assertBranch(gitClient, branchName);
 
-        /* Checkout a commit before README was added, before src directory was added */
+        /* Checkout a commit before test.md was added, before src directory was added */
         branchName = baseName + branchNumber++;
         String olderRef = "355e2b662363fea88ac31638901d942d120c67dd";
         gitClient.checkout(olderRef, branchName);
@@ -1290,7 +1290,7 @@ public class GitClientTest {
         assertDirNotInWorkingDir(gitClient, "src");
         assertBranch(gitClient, branchName);
 
-        /* Checkout a commit before README was added, before src directory was added */
+        /* Checkout a commit before test.md was added, before src directory was added */
         branchName = baseName + branchNumber++;
         String olderRef = "355e2b662363fea88ac31638901d942d120c67dd";
         gitClient.checkout().ref(olderRef).branch(branchName).execute();
