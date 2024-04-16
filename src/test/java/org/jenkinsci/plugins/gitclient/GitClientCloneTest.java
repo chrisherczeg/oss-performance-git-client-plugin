@@ -364,7 +364,7 @@ public class GitClientCloneTest {
     @Test
     public void test_setRemoteURL_local_clone() throws Exception {
         workspace.cloneRepo(workspace, workspace.localMirror());
-        String originURL = "https://github.com/jenkinsci/git-client-plugin.git";
+        String originURL = "https://github.com/chrisherczeg/small-git-repo";
         testGitClient.setRemoteUrl("origin", originURL);
         assertThat("Origin URL", testGitClient.getRemoteUrl("origin"), is(originURL));
         String remotes = workspace.launchCommand("git", "remote", "-v");
@@ -375,7 +375,7 @@ public class GitClientCloneTest {
     public void test_addRemoteUrl_local_clone() throws Exception {
         workspace.cloneRepo(workspace, workspace.localMirror());
         assertThat("Origin URL before add", testGitClient.getRemoteUrl("origin"), is(workspace.localMirror()));
-        String upstreamURL = "https://github.com/jenkinsci/git-client-plugin.git";
+        String upstreamURL = "https://github.com/chrisherczeg/small-git-repo";
         testGitClient.addRemoteUrl("upstream", upstreamURL);
         assertThat("Upstream URL", testGitClient.getRemoteUrl("upstream"), is(upstreamURL));
         assertThat("Origin URL after add", testGitClient.getRemoteUrl("origin"), is(workspace.localMirror()));
