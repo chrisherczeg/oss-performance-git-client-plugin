@@ -56,7 +56,7 @@ import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.TemporaryDirectoryAllocator;
 import org.objenesis.ObjenesisStd;
 
-public abstract class GitAPITestUpdate {
+public abstract class GitAPITest {
 
     private final TemporaryDirectoryAllocator temporaryDirectoryAllocator = new TemporaryDirectoryAllocator();
 
@@ -202,7 +202,7 @@ public abstract class GitAPITestUpdate {
             return repo.getAbsolutePath();
         }
 
-        GitAPITestUpdate.WorkingArea init() throws IOException, InterruptedException {
+        GitAPITest.WorkingArea init() throws IOException, InterruptedException {
             git.init();
             String userName = "root";
             String emailAddress = "root@mydomain.com";
@@ -216,7 +216,7 @@ public abstract class GitAPITestUpdate {
             return this;
         }
 
-        GitAPITestUpdate.WorkingArea init(boolean bare) throws IOException, InterruptedException {
+        GitAPITest.WorkingArea init(boolean bare) throws IOException, InterruptedException {
             git.init_().workspace(repoPath()).bare(bare).execute();
             return this;
         }
