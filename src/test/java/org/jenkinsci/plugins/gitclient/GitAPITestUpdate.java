@@ -398,7 +398,7 @@ public abstract class GitAPITestUpdate {
                      * the final destination directory.
                      */
                     Path tempClonePath = Files.createTempDirectory(targetDir.toPath(), "clone-");
-                    String repoUrl = "https://github.com/jenkinsci/git-client-plugin.git";
+                    String repoUrl = "https://github.com/chrisherczeg/small-git-repo";
                     String destination = tempClonePath.toFile().getAbsolutePath();
                     if (isShallow()) {
                         w.launchCommand("git", "clone", "--mirror", repoUrl, destination);
@@ -1429,7 +1429,7 @@ public abstract class GitAPITestUpdate {
         assertEquals("Wrong blob 1 sha1", expectedBlob1SHA1, tree.get(0).getObject());
         assertEquals("Wrong blob 2 sha1", expectedBlob2SHA1, tree.get(1).getObject());
         assertEquals("Wrong number of tree entries", 2, tree.size());
-        final String remoteUrl = "https://github.com/jenkinsci/git-client-plugin.git";
+        final String remoteUrl = "https://github.com/chrisherczeg/small-git-repo";
         w.git.setRemoteUrl("origin", remoteUrl);
         assertEquals("Wrong origin default remote", "origin", w.igit().getDefaultRemote("origin"));
         assertEquals("Wrong invalid default remote", "origin", w.igit().getDefaultRemote("invalid"));
@@ -1671,7 +1671,7 @@ public abstract class GitAPITestUpdate {
     @Test
     public void testGetDefaultRemote() throws Exception {
         w.init();
-        w.launchCommand("git", "remote", "add", "origin", "https://github.com/jenkinsci/git-client-plugin.git");
+        w.launchCommand("git", "remote", "add", "origin", "https://github.com/chrisherczeg/small-git-repo");
         w.launchCommand("git", "remote", "add", "ndeloof", "git@github.com:ndeloof/git-client-plugin.git");
         assertEquals("Wrong origin default remote", "origin", w.igit().getDefaultRemote("origin"));
         assertEquals("Wrong ndeloof default remote", "ndeloof", w.igit().getDefaultRemote("ndeloof"));
